@@ -11,15 +11,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
+  
   <!-- Firebase Reference -->
   <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 
   <!-- Moment.js Reference -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    
   <style>
-    #employee-table th,
+    #train-table th,
     td {
       display: inline-block;
       width: 16.575%;
@@ -33,7 +33,9 @@
   <div class="container">
 
     <!-- Jumbotron -->
-    <div class="jumbotron" style="background-color: black; color: white">
+    <div class="jumbotron" style="background-color: brown; color: white">
+      <h1>Time:<br/><small class="current-time"></small></h1>
+
       <h1 class="text-center">Anytime is Train Time</h1>
       <h4 class="text-center">Choo Choo. Chee Chee.</h4>
     </div>
@@ -46,12 +48,12 @@
         <div class="card mb-4">
           <div class="card-header">Current Train Schedule</div>
           <div class="card-body">
-            <table class="table table-sm table-hover" id='employee-table'>
+            <table class="table table-sm table-hover" id='train-table'>
               <thead>
                 <tr>
-                  <th scope="col">Train Time</th>
+                  <th scope="col">Train Name</th>
                   <th scope="col">Destination</th>
-                  <th scope="col">Frequency (Min)</th>
+                  <th scope="col">Frequency</th>
                   <th scope="col">Next Arrival</th>
                   <th scope="col">Minutes Away</th>
                 </tr>
@@ -74,22 +76,22 @@
             <!-- Entry Form -->
             <form>
               <div class="form-group">
-                <label for="employee-name-input">Train Name</label>
-                <input class="form-control" id="employee-name-input" type="text">
+                <label for="train-name">Train Name</label>
+                <input class="form-control" id="train-name" type="text">
               </div>
               <div class="form-group">
-                <label for="role-input">Destination</label>
-                <input class="form-control" id="role-input" type="text">
+                <label for="destination">Destination</label>
+                <input class="form-control" id="destination" type="text">
               </div>
               <div class="form-group">
-                <label for="start-input">First Train Time (HH:mm - military time)</label>
-                <input class="form-control" id="start-input" type="text">
+                <label for="train-time">First Train Time (HH:mm - military time)</label>
+                <input class="form-control" id="train-time" type="text">
               </div>
               <div class="form-group">
-                <label for="rate-input">Frequency</label>
-                <input class="form-control" id="rate-input" type="text">
+                <label for="frequency">Frequency</label>
+                <input class="form-control" id="frequency" type="text">
               </div>
-              <button class="btn btn-primary float-right" id="add-employee-btn">Submit</button>
+              <button class="btn btn-primary float-right" id="add-train">Submit</button>
             </form>
 
           </div>
@@ -100,9 +102,9 @@
   </div>
 
   <!-- JavaScript -->
-  <script src="timesheetLogic.js"></script>
+  <script src="assets/javascript/app.js"></script>
   <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/7.0.0/firebase-app.js"></script>
+
 
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->

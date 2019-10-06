@@ -6,6 +6,10 @@
 // 4. Create a way to calculate the months worked. Using difference between start and current time.
 //    Then use moment.js formatting to set difference in months.
 // 5. Calculate Total billed
+$(document).ready(function () {
+
+  var currentTime =  moment();
+})
 
 // 1. Initialize Firebase
 
@@ -21,92 +25,81 @@ var firebaseConfig = {
   // Initialize Firebase
 
 
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
+
 
 var database = firebase.database();
 
-// 2. Button for adding Employees
-$("#add-employee-btn").on("click", function(event) {
-  event.preventDefault();
+setInterval(function () {
+  $(".current-time").html(moment().format('hh:mm:ss A'))
+}, 1000); 
 
-  // Grabs user input
-  var empName = $("#employee-name-input").val().trim();
-  var empRole = $("#role-input").val().trim();
-  var empStart = moment($("#start-input").val().trim(), "MM/DD/YYYY").format("X");
-  var empRate = $("#rate-input").val().trim();
+var train = null;
+var destination = null;
+var trainTime = null;
+var frequency = null;
 
-  // Creates local "temporary" object for holding employee data
-  var newEmp = {
-    name: empName,
-    role: empRole,
-    start: empStart,
-    rate: empRate
-  };
 
-  // Uploads employee data to the database
-  database.ref().push(newEmp);
+$("#add-train").click(function () {
+    event.preventDefault();
 
-  // Logs everything to console
-  console.log(newEmp.name);
-  console.log(newEmp.role);
-  console.log(newEmp.start);
-  console.log(newEmp.rate);
+    train = $("#train-name").val().trim();
+    console.log(train);
+    destination = $("#destination").val().trim();
+    console.log(destination);
+    trainTime = $("#train-time").val().trim();
+    console.log(trainTime);
+    frequency = $("#frequency").val().trim();
+    console.log(frequency);
 
-  alert("Employee successfully added");
+    // take input from first train time & frequency and write function to do the math
+    var trainTimeConverted = moment(trainTime, "HH:mm").subtract(1, "years");
+    console.log(trainTimeConverted);
 
-  // Clears all of the text-boxes
-  $("#employee-name-input").val("");
-  $("#role-input").val("");
-  $("#start-input").val("");
-  $("#rate-input").val("");
-});
+    // Current Time
+    var currentTime = moment();
+    console.log(moment(currentTime).format("hh:mm"));
 
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
-database.ref().on("child_added", function(childSnapshot) {
-  console.log(childSnapshot.val());
+    // Difference between the times
+    var diffTime = moment().diff(moment(trainTimeConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
 
-  // Store everything into a variable.
-  var empName = childSnapshot.val().name;
-  var empRole = childSnapshot.val().role;
-  var empStart = childSnapshot.val().start;
-  var empRate = childSnapshot.val().rate;
+    // Time apart (remainder)
+    var tRemainder = diffTime % frequency;
+    console.log(tRemainder);
 
-  // Employee Info
-  console.log(empName);
-  console.log(empRole);
-  console.log(empStart);
-  console.log(empRate);
+    // Minute Until Train
+    var minUntilTrain = frequency - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + minUntilTrain);
 
-  // Prettify the employee start
-  var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
+    // Next Train
+    var nextTrain = moment().add(minUntilTrain, "minutes").format("hh:mm A");
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
 
-  // Calculate the months worked using hardcore math
-  // To calculate the months worked
-  var empMonths = moment().diff(moment(empStart, "X"), "months");
-  console.log(empMonths);
+    database.ref().push({
+        trainName: train,
+        destination: destination,
+        trainTime: trainTime,
+        frequency: frequency,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+    })
+    // adds trains to table
+    $("#train-table > tbody").append(
+        $("<tr>").append(
+            $("<td>").text(train),
+            $("<td>").text(destination),
+            $("<td>").text(frequency),
+            $("<td>").text(nextTrain),
+            $("<td>").text(minUntilTrain)
+        )
+    );
+    clearForm();
 
-  // Calculate the total billed rate
-  var empBilled = empMonths * empRate;
-  console.log(empBilled);
+})
 
-  // Create the new row
-  var newRow = $("<tr>").append(
-    $("<td>").text(empName),
-    $("<td>").text(empRole),
-    $("<td>").text(empStartPretty),
-    $("<td>").text(empMonths),
-    $("<td>").text(empRate),
-    $("<td>").text(empBilled)
-  );
-
-  // Append the new row to the table
-  $("#employee-table > tbody").append(newRow);
-});
-
-// Example Time Math
-// -----------------------------------------------------------------------------
-// Assume Employee start date of January 1, 2015
-// Assume current date is March 1, 2016
-
-// We know that this is 15 months.
-// Now we will create code in moment.js to confirm that any attempt we use meets this test case
+var clearForm = function () {
+    $("#train-name").val("");
+    $("#destination").val("");
+    $("#train-time").val("");
+    $("#frequency").val("");
+}
